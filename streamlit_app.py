@@ -63,7 +63,7 @@ st.write(
 
 model = load_model()
 
-uploaded = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
+uploaded = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png", "webp"])
 
 if uploaded is not None:
     image = Image.open(uploaded).convert("RGB")
