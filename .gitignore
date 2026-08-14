@@ -1,0 +1,21 @@
+# Dataset — downloads automatically, never commit it
+data/
+
+# Virtual environment
+venv/
+env/
+
+# Old model backup
+model/flower_classifier_old.pth
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Gradio temp files
+flagged/
+.gradio/
+
+# OS files
+.DS_Store
+Thumbs.db
