@@ -2,6 +2,8 @@
 
 An image classifier that identifies 102 flower species from a photo, built by fine-tuning a pretrained ResNet18. Upload an image and the app returns the five most likely species with confidence scores.
 
+**[Try it live →](https://flowerclassifier01.streamlit.app/)**
+
 **Test accuracy: 88.2%** on 6,149 held-out images.
 
 ---
@@ -23,9 +25,15 @@ The dataset provides only 10 training images per class, so training applies rand
 | First attempt — all layers, single learning rate, 5 epochs | 59.0% |
 | Two-stage training, 20 epochs, expanded augmentation | 88.2% |
 
-The first version updated every layer at a learning rate of 1e-3 from the start, which overwrote the pretrained ImageNet features it was supposed to be building on. Common flowers were being misclassified as a result. Freezing the backbone for the first stage and dropping the fine-tuning learning rate to 1e-4 fixed it.
+The first version updated every layer at a learning rate of 1e-3 from the start, which overwrote the pretrained ImageNet features it was supposed to be building on. Common flowers were being misclassified as a result — a clear photo of a rose came back as cyclamen. Freezing the backbone for the first stage and dropping the fine-tuning learning rate to 1e-4 fixed it.
 
 Model selection uses the validation split. The test split is evaluated once, at the end, after training is complete.
+
+## Reading the confidence scores
+
+Top predictions usually land around 20–35% rather than 90%+. That's expected, not a defect. Probability is spread across 102 classes, and training uses label smoothing, which deliberately discourages the model from being overconfident. What matters is the gap between the top prediction and the rest — a correct answer typically sits several times higher than second place.
+
+The app shows a warning when the top prediction falls below 20%, which usually means the input is a screenshot, a wide garden shot, a bouquet, or a species outside the 102 it was trained on.
 
 ## Dataset
 
@@ -54,7 +62,7 @@ python train.py
 Launch the web app:
 
 ```bash
-python app.py
+streamlit run streamlit_app.py
 ```
 
 ## Files
@@ -63,9 +71,11 @@ python app.py
 |---|---|
 | `train.py` | Two-stage training, saves the best checkpoint by validation accuracy |
 | `eval_old.py` | Scores a saved model against the test split |
-| `app.py` | Gradio interface for uploading a photo and viewing predictions |
+| `streamlit_app.py` | Streamlit interface — the deployed version |
+| `app.py` | Earlier Gradio interface, kept for local use |
+| `examples/` | Sample images loaded by the buttons in the app |
 | `model/flower_classifier.pth` | Trained weights |
 
 ## Built with
 
-Python, PyTorch, torchvision, Gradio
+Python, PyTorch, torchvision, Streamlit
